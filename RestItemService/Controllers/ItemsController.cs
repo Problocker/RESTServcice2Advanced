@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RestItemService.model;
 
@@ -30,12 +31,28 @@ namespace RestItemService.Controllers
             return items;
         }
 
+        //// GET api/<ItemsController>/5
+        //[HttpGet] //Http request Method
+        //[Route("{id}")] //Http request URI/URL
+        //public Item Get(int id)
+        //{
+        //    return items.Find(i => i.Id == id);
+        //}
+
         // GET api/<ItemsController>/5
-        [HttpGet]
-        [Route("{id}")]
-        public Item Get(int id)
+        [HttpGet] //Http request Method
+        [Route("{id}")] //Http request URI/URL
+        [ProducesResponseType(StatusCodes
+            .Status200OK)] //http response statuskode //[ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(StatusCodes
+            .Status404NotFound)] //http response statuskode //[ProducesResponseType(statusCode: 404)]
+        public IActionResult Get(int id)
         {
-            return items.Find(i => i.Id == id);
+            if (items.Exists(i => i.Id == id))
+            {
+                return Ok(items.Find(i => i.Id == id));
+            }
+            return NotFound($"Item ID {id} ikke fundet");
         }
 
         // POST api/<ItemsController>
@@ -43,7 +60,6 @@ namespace RestItemService.Controllers
         public void Post([FromBody] Item value)
         {
             items.Add(value);
-
         }
 
         // PUT api/<ItemsController>/5
@@ -51,7 +67,7 @@ namespace RestItemService.Controllers
         [Route("{id}")]
         public void Put(int id, [FromBody] Item value)
         {
-            Item item = Get(id);
+            Item item = (Item)Get(id);
             if (item != null)
             {
                 item.Id = value.Id;
@@ -66,7 +82,7 @@ namespace RestItemService.Controllers
         [Route("{id}")]
         public void Delete(int id)
         {
-            Item item = Get(id);
+            Item item = (Item)Get(id);
             items.Remove(item);
         }
 
@@ -75,7 +91,7 @@ namespace RestItemService.Controllers
         [Route("Name/{substring}")]
         public IEnumerable<Item> GetFromSubstring(String substring)
         {
-            return items.FindAll(i => i.Name.ToLower().Contains(substring.ToLower()));
+            return items.FindAll(i => i.Name.ToLower().Contains(substring.ToLower())); //Bruger ToLower så den ikke klager over store tegn.
         }
 
         //Quality, mængder, ‘Low’, ‘Middle’ or ‘High’
@@ -87,7 +103,7 @@ namespace RestItemService.Controllers
         }
 
         //
-        [HttpGet]
+        [HttpGet]//Http request Method
         [Route("Search")]
         public IEnumerable<Item> GetWithFilter([FromQuery] FilterItem filter)
         {
