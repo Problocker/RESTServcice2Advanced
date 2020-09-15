@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RestItemService.model;
@@ -15,11 +16,11 @@ namespace RestItemService.Controllers
     {
         private static readonly List<Item> items = new List<Item>()
         {
-            new Item(1,"Bread","Low",33),
-            new Item(2,"Bread","Middle",21),
-            new Item(3,"Beer","low",70.5),
-            new Item(4,"Soda","High",21.4),
-            new Item(5,"Milk","Low",55.8)
+            new Item(1, "Bread", "Low", 33),
+            new Item(2, "Bread", "Middle", 21),
+            new Item(3, "Beer", "low", 70.5),
+            new Item(4, "Soda", "High", 21.4),
+            new Item(5, "Milk", "Low", 55.8)
         };
 
         // GET: api/<ItemsController>
@@ -85,9 +86,28 @@ namespace RestItemService.Controllers
             return items.FindAll(i => i.Quality.ToLower().Contains(quality.ToLower()));
         }
 
+        //
+        [HttpGet]
+        [Route("Search")]
+        public IEnumerable<Item> GetWithFilter([FromQuery] FilterItem filter)
+        {
+            if (filter.LowQuantity != 0 && filter.HighQuantity != 0)
+            {
+                return items.FindAll(i => i.Quantity > filter.LowQuantity && i.Quantity < filter.HighQuantity);
+            }
 
+            if (filter.LowQuantity != 0)
+            {
+                return items.FindAll(i => i.Quantity > filter.LowQuantity);
+            }
 
-
-
+            if (filter.HighQuantity != 0)
+            {
+                return items.FindAll(i => i.Quantity < filter.HighQuantity);
+            }
+            {
+                return new List<Item>();
+            }
+        }
     }
 }
