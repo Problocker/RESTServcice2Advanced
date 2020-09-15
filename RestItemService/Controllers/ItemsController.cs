@@ -42,10 +42,8 @@ namespace RestItemService.Controllers
         // GET api/<ItemsController>/5
         [HttpGet] //Http request Method
         [Route("{id}")] //Http request URI/URL
-        [ProducesResponseType(StatusCodes
-            .Status200OK)] //http response statuskode //[ProducesResponseType(statusCode: 200)]
-        [ProducesResponseType(StatusCodes
-            .Status404NotFound)] //http response statuskode //[ProducesResponseType(statusCode: 404)]
+        [ProducesResponseType(StatusCodes.Status200OK)] //http response statuskode //[ProducesResponseType(statusCode: 200)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)] //http response statuskode //[ProducesResponseType(statusCode: 404)]
         public IActionResult Get(int id)
         {
             if (items.Exists(i => i.Id == id))
