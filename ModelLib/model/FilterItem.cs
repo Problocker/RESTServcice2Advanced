@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace RestItemService.model
+namespace ModelLib.model
 {
     public class FilterItem
     {
@@ -15,7 +14,7 @@ namespace RestItemService.model
         public FilterItem()
         {
         }
-        
+
         //Constructor
         public FilterItem(double lowQuantity, double highQuantity)
         {
